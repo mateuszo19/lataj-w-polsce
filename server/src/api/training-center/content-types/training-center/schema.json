@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "training_centers",
+  "info": {
+    "singularName": "training-center",
+    "pluralName": "training-centers",
+    "displayName": "Training Center",
+    "description": "Aviation training centers (ATO, CTO, DTO)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["ATO", "CTO", "DTO"],
+      "required": true,
+      "default": "ATO"
+    },
+    "certificateNumber": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "address": {
+      "type": "text"
+    },
+    "phone": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "fax": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "email": {
+      "type": "email",
+      "maxLength": 255
+    },
+    "city": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "trainingCourses": {
+      "type": "json"
+    },
+    "simulators": {
+      "type": "json"
+    },
+    "website": {
+      "type": "string",
+      "maxLength": 255
+    }
+  }
+}
