@@ -10,6 +10,7 @@
 - Do NOT use @author or @version tags
 - Do NOT use emoji
 - Always write Jest tests. Run them before you will thinking that work is done.
+- Do NOT inform about using AI, Claude, Claude Code in commits
 
 ## Task History
 
