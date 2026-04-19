@@ -1,36 +1,26 @@
 {
-  "name": "lataj-w-polsce-server",
-  "private": true,
-  "version": "0.1.0",
-  "description": "A Strapi application",
+  "name": "server",
+  "version": "1.0.0",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "strapi build",
-    "develop": "strapi develop",
-    "start": "strapi start",
-    "strapi": "strapi"
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Lataj w Polsce API Server",
   "dependencies": {
-    "@strapi/plugin-i18n": "^4.25.24",
-    "@strapi/plugin-users-permissions": "^4.25.24",
-    "@strapi/strapi": "^4.25.24",
-    "better-sqlite3": "11.7.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "5.3.4",
-    "styled-components": "5.3.3"
+    "@fastify/cors": "^11.2.0",
+    "@fastify/env": "^6.0.0",
+    "fastify": "^5.8.5"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.12",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "typescript": "^5"
-  },
-  "engines": {
-    "node": ">=18.0.0 <=22.x.x",
-    "npm": ">=6.0.0"
-  },
-  "strapi": {
-    "uuid": "lataj-w-polsce"
+    "@types/node": "^25.6.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
   }
 }
