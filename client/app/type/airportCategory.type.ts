@@ -1,0 +1,1 @@
+export type AirportCategory = 'commercial' | 'general' | 'special' | 'military' | "DOL" | "hospital";

@@ -1,0 +1,1 @@
+export type AirportSupportedVehiclesType = 'plane' | 'helicopter' | 'balloon' | 'glider'
