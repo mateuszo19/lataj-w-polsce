@@ -55,17 +55,14 @@ export type Language = "polski" | "angielski" | "niemiecki" | "rosyjski";
 /**
  * Training mode options
  */
-export type TrainingMode = "theory" | "practice" | "both";
-
-/**
- * Price level indicator (1-3)
- */
-export type PriceLevel = 1 | 2 | 3;
+export type TrainingMode = "theory" | "practice" | 'both';
 
 /**
  * Training course details
  */
 export interface Training {
+  /** Training id */
+  id: number;
   /** Type of license/rating being trained for */
   type: TrainingType;
   /** Training delivery mode */
@@ -92,10 +89,14 @@ export interface Aircraft {
  * Contact information for a location
  */
 export interface ContactInfo {
-  /** Email address */
-  email?: string;
-  /** Phone number */
-  phone?: string;
+  cell: {
+    /** Cell name */
+    name: string;
+    /** Email address */
+    email?: string;
+    /** Phone number */
+    phone?: string;
+  }[]
   /** Website URL */
   website?: string;
   /** Physical address */
@@ -108,16 +109,18 @@ export interface ContactInfo {
 export interface Location {
   /** Unique identifier */
   id: string;
+  /** Url part */
+  slug: string;
   /** Organization name */
   name: string;
   /** Type of organization */
   type: LocationType;
   /** Geographic coordinates [longitude, latitude] */
   coordinates: [number, number];
+  /** Offer */
+  offer?: string[]
   /** Available training courses */
   trainings: Training[];
-  /** Price level indicator */
-  priceLevel: PriceLevel;
   /** Available aircraft fleet */
   aircraft: Aircraft[];
   /** Contact information */

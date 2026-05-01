@@ -12,30 +12,77 @@ html,
 body {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  font-family: 'Inter', 'Arial', 'Helvetica', sans-serif;
 }
 
-/* Custom Popup Styles - Just Join IT inspired */
-.mapboxgl-popup {
-  padding: 0;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+#__next {
+  width: 100%;
+  height: 100%;
 }
 
-.mapboxgl-popup-tip {
-  display: none;
+/* Leaflet Map Styles */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', 'Arial', sans-serif;
 }
 
-.mapboxgl-popup-content {
-  margin: 0;
-  padding: 0;
-  border-radius: 16px;
-  background: white;
+.leaflet-popup {
+  .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    padding: 0;
+  }
+
+  .leaflet-popup-content {
+    margin: 0;
+    min-width: 220px;
+  }
+
+  .leaflet-popup-tip {
+    display: none;
+  }
 }
 
-/* Marker hover effect */
-.custom-marker:hover {
-  z-index: 1000 !important;
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-control-zoom a {
+  background-color: white !important;
+  border-color: #E5E5E5 !important;
+  color: #1F2937 !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #F3F4F6 !important;
+}
+
+/* Cluster marker hover effect */
+.custom-cluster-icon:hover {
+  filter: brightness(1.1);
+}
+
+/* Location badge hover effect */
+.custom-location-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Custom scrollbar for sidebar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAFAFA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4D4D4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A3A3A3;
 }

@@ -14,6 +14,9 @@ const modeLabels = {
   both: "Teoria + Praktyka"
 };
 
+/**
+ * Group trainings by type (e.g., PPL(A), CPL(A))
+ */
 function groupTrainingsByType(trainings: Training[]) {
   const grouped = new Map<string, Training[]>();
 
@@ -27,20 +30,11 @@ function groupTrainingsByType(trainings: Training[]) {
   return grouped;
 }
 
-function getTrainingTypeInfo(trainings: Training[]) {
-  const modes = [...new Set(trainings.map(t => t.mode))];
-  const languages = [...new Set(trainings.flatMap(t => t.languages))];
-  const prices = trainings.filter(t => t.price !== undefined).map(t => t.price!);
-
-  const minPrice = prices.length > 0 ? Math.min(...prices) : null;
-  const maxPrice = prices.length > 0 ? Math.max(...prices) : null;
-
-  return {
-    modes,
-    languages,
-    minPrice,
-    maxPrice
-  };
+/**
+ * Get all unique languages from trainings
+ */
+function getUniqueLanguages(trainings: Training[]): string[] {
+  return [...new Set(trainings.flatMap(t => t.languages))];
 }
 
 export default function CourseSidePanel({ location, isOpen, onClose }: CourseSidePanelProps) {
@@ -52,7 +46,7 @@ export default function CourseSidePanel({ location, isOpen, onClose }: CourseSid
 
   return (
     <>
-      <div className="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl z-50 flex flex-col">
+      <div className="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl flex flex-col z-[99999]">
         <div className="border-b border-gray-200 p-6 bg-white">
           <div className="flex justify-between items-start">
             <div className="flex-1">
@@ -75,48 +69,48 @@ export default function CourseSidePanel({ location, isOpen, onClose }: CourseSid
 
         <div className="flex-1 overflow-y-auto p-6">
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Szkolenia</h3>
-            <div className="space-y-3">
-              {Array.from(groupedTrainings.entries()).map(([type, trainings]) => {
-                const info = getTrainingTypeInfo(trainings);
-
-                return (
-                  <div key={type} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="font-semibold text-gray-900">{type}</h4>
-                      {(info.minPrice || info.maxPrice) && (
-                        <div className="text-right ml-4">
-                          {info.minPrice && info.maxPrice && info.minPrice !== info.maxPrice ? (
-                            <span className="text-sm font-medium text-gray-700">
-                              {info.minPrice.toLocaleString()} - {info.maxPrice.toLocaleString()} PLN
-                            </span>
-                          ) : info.minPrice ? (
-                            <span className="text-sm font-medium text-gray-700">
-                              {info.minPrice.toLocaleString()} PLN
-                            </span>
-                          ) : null}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-baseline gap-3">
-                        <span className="text-gray-500 text-xs w-16 shrink-0">Tryb:</span>
-                        <span className="text-gray-700">
-                          {info.modes.map(mode => modeLabels[mode as keyof typeof modeLabels]).join(" + ")}
-                        </span>
-                      </div>
-
-                      <div className="flex items-baseline gap-3">
-                        <span className="text-gray-500 text-xs w-16 shrink-0">Języki:</span>
-                        <span className="text-gray-700">
-                          {info.languages.join(", ")}
-                        </span>
-                      </div>
-                    </div>
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Cennik szkoleń</h3>
+            <div className="space-y-4">
+              {Array.from(groupedTrainings.entries()).map(([type, trainings]) => (
+                <div key={type} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                    <h4 className="font-semibold text-gray-900 text-sm">{type}</h4>
                   </div>
-                );
-              })}
+
+                  <div className="divide-y divide-gray-100">
+                    {trainings.map((training, index) => (
+                      <div key={`${type}-${training.mode}-${index}`} className="px-4 py-3">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-medium text-gray-900">
+                                {modeLabels[training.mode as keyof typeof modeLabels]}
+                              </span>
+                              <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">
+                                {training.languages.join(", ")}
+                              </span>
+                            </div>
+                          </div>
+
+                          {training.price !== undefined && (
+                            <div className="text-right shrink-0">
+                              <span className="text-sm font-semibold text-gray-900">
+                                {training.price.toLocaleString()} PLN
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
+                    <span className="text-xs text-gray-500">
+                      {trainings.length} {trainings.length === 1 ? 'wariant' : 'warianty'} • {getUniqueLanguages(trainings).join(", ")}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

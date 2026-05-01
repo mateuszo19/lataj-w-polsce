@@ -204,3 +204,59 @@ export function createCustomMarker(location: Location): HTMLElement {
 
   return marker;
 }
+
+/**
+ * Create cluster marker element for map
+ * @param count - Number of locations in cluster
+ * @returns HTML element for cluster marker
+ */
+export function createClusterMarker(count: number): HTMLElement {
+  const marker = document.createElement("div");
+  marker.className = "cluster-marker";
+  marker.style.cssText = `
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  `;
+
+  const size = Math.min(40 + count * 2, 70);
+
+  const markerBody = document.createElement("div");
+  markerBody.style.cssText = `
+    position: relative;
+    width: ${size}px;
+    height: ${size}px;
+    background: linear-gradient(135deg, #1F2937, #111827);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(31, 41, 55, 0.4), 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 3px solid white;
+  `;
+
+  const countText = document.createElement("div");
+  countText.textContent = count.toString();
+  countText.style.cssText = `
+    font-size: ${Math.min(16 + count * 0.3, 24)}px;
+    font-weight: 700;
+    color: white;
+    font-family: 'Inter', 'Arial', sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  `;
+
+  markerBody.appendChild(countText);
+  marker.appendChild(markerBody);
+
+  marker.addEventListener("mouseenter", () => {
+    markerBody.style.transform = "scale(1.1)";
+    markerBody.style.boxShadow = "0 12px 28px rgba(31, 41, 55, 0.5), 0 6px 12px rgba(0, 0, 0, 0.2)";
+  });
+
+  marker.addEventListener("mouseleave", () => {
+    markerBody.style.transform = "scale(1)";
+    markerBody.style.boxShadow = "0 8px 20px rgba(31, 41, 55, 0.4), 0 4px 8px rgba(0, 0, 0, 0.15)";
+  });
+
+  return marker;
+}
