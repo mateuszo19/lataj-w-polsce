@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
 
 export const metadata: Metadata = {
   title: "Lataj w Polsce",
@@ -13,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl">
-      <body>{children}</body>
+      <body className="h-screen">{children}</body>
     </html>
   );
 }
