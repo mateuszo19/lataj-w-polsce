@@ -1,0 +1,40 @@
+import {TrainingType} from "@/app/lib/types";
+
+const trainingTypeLabels: Record<TrainingType, string> = {
+    "LAPL(A)": "LAPL(A)",
+    "PPL(A)": "PPL(A)",
+    "CPL(A)": "CPL(A)",
+    "ATPL(A)": "ATPL(A)",
+    "CB-IR(A)": "CB-IR(A)",
+    "EIR": "EIR",
+    "IR(A)": "IR(A)",
+    "MEP(A)": "MEP(A)",
+    "SET": "SET",
+    "NVFR": "NVFR",
+    "UPRT": "UPRT",
+    "LAPL(H)": "LAPL(H)",
+    "PPL(H)": "PPL(H)",
+    "CPL(H)": "CPL(H)",
+    "ATPL(H)": "ATPL(H)",
+    "IR(H)": "IR(H)",
+    "LAPL(S)": "LAPL(S)",
+    "SPL": "SPL",
+    "GLIDER": "GLIDER",
+    "ULM": "ULM",
+    "LAPL(B)": "LAPL(B)",
+    "BPL": "BPL",
+    "FI(A)": "FI(A)",
+    "FI(H)": "FI(H)",
+    "FI(S)": "FI(S)",
+    "FI(B)": "FI(B)",
+    "IRI(A)": "IRI(A)",
+    "CRI": "CRI",
+    "TRI": "TRI",
+    "SFI": "SFI",
+    "FSTD": "FSTD",
+    "night": "Loty nocne",
+    "acro": "Akrobacja",
+    "towing": "Wleczanie"
+};
+
+export default trainingTypeLabels;

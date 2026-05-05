@@ -1,4 +1,4 @@
-import { Location, PriceLevel, Language, Training } from "./types";
+import { Location, Language, Training } from "./types";
 
 /**
  * Color configuration for different location types
@@ -20,15 +20,6 @@ export const typeColors = {
     icon: "📋"
   },
 };
-
-/**
- * Generate dollar icons representing price level
- * @param priceLevel - Price level from 1 to 3
- * @returns String of dollar signs
- */
-export function getPriceIcons(priceLevel: PriceLevel): string {
-  return "$".repeat(priceLevel);
-}
 
 /**
  * Get summary of available training types at a location
@@ -56,36 +47,6 @@ export function getLanguagesSummary(location: Location): string {
     rosyjski: "🇷🇺"
   };
   return uniqueLanguages.map(lang => flags[lang]).join(" ");
-}
-
-/**
- * Create HTML string for price badge component
- * @param priceLevel - Price level from 1 to 3
- * @returns HTML string for price badge
- */
-export function createPriceBadge(priceLevel: PriceLevel): string {
-  const colors = {
-    1: "#10B981",
-    2: "#F59E0B",
-    3: "#EF4444"
-  };
-
-  return `
-    <div style="
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      background: ${colors[priceLevel]}15;
-      color: ${colors[priceLevel]};
-    ">
-      <span style="font-size: 16px;">${getPriceIcons(priceLevel)}</span>
-      <span>${priceLevel === 1 ? 'Niskie' : priceLevel === 2 ? 'Średnie' : 'Wysokie'}</span>
-    </div>
-  `;
 }
 
 /**

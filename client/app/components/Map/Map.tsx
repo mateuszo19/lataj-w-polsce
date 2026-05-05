@@ -1,168 +1,332 @@
 "use client";
 
-import { useState, useCallback } from 'react';
-import dynamic from 'next/dynamic';
-import {LatLngExpression} from "leaflet";
-import {Airport} from "@/app/interface/airport.interface";
-import {AirportType} from "@/app/type/airport.type";
+import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
+import L from "leaflet";
+import { Location } from "@/app/lib/types";
+import { typeColors } from "@/app/lib/utils";
 
-const Circle = dynamic(
-  () => import('react-leaflet').then((mod) => mod.Circle),
-  { ssr: false }
-);
-
-interface MapProps {
-    position: LatLngExpression,
-    zoom: number,
-    size: {
-        height: string;
-        width: string;
-    },
-    markers: {
-        airports: Airport[],
-    }
+/**
+ * User location coordinates
+ */
+interface UserLocation {
+  lat: number;
+  lng: number;
 }
 
-const MapContainer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.MapContainer),
-  { ssr: false }
-);
+/**
+ * Create cluster icon with count
+ */
+function createClusterIcon(cluster: any): L.DivIcon {
+  const count = cluster.getChildCount();
+  const size = Math.min(40 + count * 2, 70);
 
-const TileLayer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.TileLayer),
-  { ssr: false }
-);
+  return L.divIcon({
+    html: `<div style="
+      position: relative;
+      width: ${size}px;
+      height: ${size}px;
+      background: linear-gradient(135deg, #1F2937, #111827);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(31, 41, 55, 0.4), 0 4px 8px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 3px solid white;
+      cursor: pointer;
+    ">
+      <span style="
+        font-size: ${Math.min(16 + count * 0.3, 24)}px;
+        font-weight: 700;
+        color: white;
+        font-family: 'Inter', 'Arial', sans-serif;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      ">${count}</span>
+    </div>`,
+    className: "custom-cluster-icon",
+    iconSize: L.point(size, size),
+  });
+}
 
-const Marker = dynamic(
-  () => import('react-leaflet').then((mod) => mod.Marker),
-  { ssr: false }
-);
+/**
+ * Custom badge icon for single location
+ */
+function createLocationBadge(type: string, name: string): L.DivIcon {
+  const colors = typeColors[type as keyof typeof typeColors] || typeColors.aeroklub;
 
-const Popup = dynamic(
-  () => import('react-leaflet').then((mod) => mod.Popup),
-  { ssr: false }
-);
+  const textWidth = Math.max(100, name.length * 8);
 
-const MapEvents = dynamic(
-  () => import('react-leaflet').then((mod) => {
-    const { useMapEvents } = mod;
-    return function MapEvents({ onZoomChange }: { onZoomChange: (zoom: number) => void }) {
-      const mapEvents = useMapEvents({
-        zoomend() {
-          onZoomChange(mapEvents.getZoom());
-        },
-      });
-      return null;
+  return L.divIcon({
+    className: "custom-location-badge",
+    html: `
+      <div style="
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 2px solid ${colors.primary};
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: ${textWidth}px;
+      ">
+        <span style="
+          font-size: 12px;
+          font-weight: 600;
+          color: #1F2937;
+          white-space: nowrap;
+        ">${name}</span>
+      </div>
+    `,
+    iconSize: L.point(textWidth + 60, 36),
+    iconAnchor: L.point((textWidth + 60) / 2, 18),
+    popupAnchor: L.point(0, -18),
+  });
+}
+
+/**
+ * User location marker icon
+ */
+function createUserLocationIcon(): L.DivIcon {
+  return L.divIcon({
+    className: "user-location-marker",
+    html: `
+      <div style="
+        position: relative;
+        width: 20px;
+        height: 20px;
+        background: #3B82F6;
+        border: 3px solid white;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+      ">
+        <div style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 8px;
+          height: 8px;
+          background: white;
+          border-radius: 50%;
+        "></div>
+      </div>
+    `,
+    iconSize: L.point(20, 20),
+    iconAnchor: L.point(10, 10),
+  });
+}
+
+/**
+ * Props for map controller component
+ */
+interface MapControllerProps {
+  selectedLocation: Location | null;
+  userLocation: UserLocation | null;
+}
+
+/**
+ * Component to update map view when location changes
+ */
+function MapController({ selectedLocation, userLocation }: MapControllerProps) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (selectedLocation) {
+      map.flyTo(
+        [selectedLocation.coordinates[1], selectedLocation.coordinates[0]],
+        10,
+        { duration: 1 }
+      );
+    }
+  }, [selectedLocation, map]);
+
+  useEffect(() => {
+    if (userLocation && !selectedLocation) {
+      map.flyTo([userLocation.lat, userLocation.lng], 8, { duration: 1 });
+    }
+  }, [userLocation, map, selectedLocation]);
+
+  return null;
+}
+
+/**
+ * Props for map click handler component
+ */
+interface MapClickHandlerProps {
+  onSetUserLocation: (location: { lat: number; lng: number }) => void;
+}
+
+/**
+ * Map click handler component
+ */
+function MapClickHandler({ onSetUserLocation }: MapClickHandlerProps) {
+  const map = useMap();
+
+  useEffect(() => {
+    const handleClick = (e: L.LeafletMouseEvent) => {
+      onSetUserLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
     };
-  }),
-  { ssr: false }
-);
 
-const Map = ({position, zoom, size, markers} : MapProps) => {
-    const [currentZoom, setCurrentZoom] = useState(zoom);
-    const [zoneRadius, setZoneRadius] = useState(4000);
+    map.on("click", handleClick);
 
-    const handleZoomChange = useCallback((newZoom: number) => {
-        setCurrentZoom(newZoom);
+    return () => {
+      map.off("click", handleClick);
+    };
+  }, [map, onSetUserLocation]);
 
-        if(newZoom > 12) {
-            setZoneRadius(4000)
-        }
-        if(newZoom <= 12) {
-            setZoneRadius(3000)
-        }
-        console.log('Current zoom:', newZoom);
-    }, []);
+  return null;
+}
 
-    return (
-        <MapContainer
-            center={position}
-            zoom={zoom}
-            bounceAtZoomLimits={true}
-            maxZoom={15}
-            scrollWheelZoom={true}
-            style={{ height: size.height, width: size.width }}
-            className="dark-map"
-        >
-            <MapEvents onZoomChange={handleZoomChange} />
-            <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            />
-            {markers.airports.map(airport => {
-                const { latitude, longitude } = airport.position;
+/**
+ * Props for distance control component
+ */
+interface DistanceControlProps {
+  maxDistance: number;
+  onSetMaxDistance: (distance: number) => void;
+}
 
-                const colorMatch = (type: AirportType): {fill: string, color: string} => {
-                    switch (type) {
-                        case 'controlled':
-                            return ({
-                                color: '#60A5FA',
-                                fill: '#3B82F6'
-                            })
-                        case 'uncontrolled':
-                            return ({
-                                color: '#FFA02E',
-                                fill: '#FFEF91'
-                            })
-                        case "hospital":
-                            return ({
-                                color: '#468432',
-                                fill: '#9AD872'
-                            })
-                        case "helipad":
-                            return ({
-                                color: '#14B8A6',
-                                fill: '#2DD4BF'
-                            })
-                        default:
-                            return ({
-                                color: '#60A5FA',
-                                fill: '#3B82F6'
-                            })
-                    }
-                }
+/**
+ * Distance slider control component displayed on map
+ */
+function DistanceControl({ maxDistance, onSetMaxDistance }: DistanceControlProps) {
+  return (
+    <div style={{
+      position: "absolute",
+      top: "80px",
+      right: "10px",
+      zIndex: 1000,
+      background: "white",
+      padding: "12px",
+      borderRadius: "8px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      minWidth: "150px"
+    }}>
+      <label style={{
+        display: "block",
+        fontSize: "11px",
+        fontWeight: "600",
+        color: "#374151",
+        marginBottom: "8px"
+      }}>
+        Promień: {maxDistance} km
+      </label>
+      <input
+        type="range"
+        min="10"
+        max="200"
+        step="10"
+        value={maxDistance}
+        onChange={(e) => onSetMaxDistance(Number(e.target.value))}
+        style={{ width: "100%" }}
+      />
+    </div>
+  );
+}
 
-                const {color, fill} = colorMatch(airport.type)
+/**
+ * Props for the Map component
+ */
+interface MapProps {
+  locations: Location[];
+  selectedLocation: Location | null;
+  onLocationSelect: (location: Location) => void;
+  userLocation: UserLocation | null;
+  maxDistance: number;
+  onSetUserLocation: (location: { lat: number; lng: number }) => void;
+  onSetMaxDistance: (distance: number) => void;
+}
 
-                return (
-                    <Circle
-                        key={`${airport.icao}` + airport.id}
-                        center={[latitude, longitude]}
-                        radius={zoneRadius}
-                        pathOptions={{
-                            color: color,
-                            fillColor: fill,
-                            fillOpacity: 0.3,
-                            weight: 2
-                        }}
-                    >
-                            <Popup>
-                                <div className="flex flex-col">
-                                    <h3 className="text-base">{airport.name} {airport.icao && `(${airport.icao})`}</h3>
-                                    <span className="text-sm">{airport.reporter}</span>
-                                    <div className="flex gap-2 mt-2">
-                                        {airport.supportedVehicles?.map(item => (
-                                            <span
-                                                key={item}
-                                                className={`px-2 py-1 rounded-md text-xs font-medium ${
-                                                    item === 'plane'
-                                                        ? 'bg-blue-500/20 text-black'
-                                                        : 'bg-teal-500/20 text-black'
-                                                }`}
-                                            >
-                                                {item === 'plane' ? 'Samolot' : 'Śmigłowiec'}
-                                            </span>
-                                        ))}
-                                    </div>
-                                    <span>{airport.type}</span>
-                                </div>
-                            </Popup>
-                    </Circle>
-                )
-            })}
+/**
+ * Map component with clustering using react-leaflet
+ */
+export default function Map({
+  locations,
+  selectedLocation,
+  onLocationSelect,
+  userLocation,
+  maxDistance,
+  onSetUserLocation,
+  onSetMaxDistance
+}: MapProps) {
+  return (
+    <MapContainer
+      center={[51.9194, 19.1451]}
+      zoom={6}
+      className="w-full h-full"
+      zoomControl={true}
+      style={{ cursor: "crosshair" }}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
+        subdomains="abcd"
+        maxZoom={19}
+      />
 
-        </MapContainer>
-    )
-};
+      <MapController selectedLocation={selectedLocation} userLocation={userLocation} />
+      <MapClickHandler onSetUserLocation={onSetUserLocation} />
+      <DistanceControl maxDistance={maxDistance} onSetMaxDistance={onSetMaxDistance} />
 
-export default Map;
+      {userLocation && (
+        <>
+          <Circle
+            center={[userLocation.lat, userLocation.lng]}
+            radius={maxDistance * 1000}
+            pathOptions={{
+              color: "#3B82F6",
+              fillColor: "#3B82F6",
+              fillOpacity: 0.1,
+              weight: 2
+            }}
+          />
+          <Marker
+            position={[userLocation.lat, userLocation.lng]}
+            icon={createUserLocationIcon()}
+          >
+            <Popup>
+              <div className="text-center">
+                <div className="font-semibold text-sm">Twoja lokalizacja</div>
+                <div className="text-xs text-gray-500">Promień: {maxDistance} km</div>
+                <div className="text-xs text-gray-400 mt-1">Kliknij na mapie, aby zmienić</div>
+              </div>
+            </Popup>
+          </Marker>
+        </>
+      )}
+
+      <MarkerClusterGroup
+        chunkedLoading
+        iconCreateFunction={createClusterIcon}
+        maxClusterRadius={60}
+        spiderfyOnMaxZoom={true}
+        showCoverageOnHover={false}
+        zoomToBoundsOnClick={true}
+      >
+        {locations.map((location) => (
+          <Marker
+            key={location.id}
+            position={[location.coordinates[1], location.coordinates[0]]}
+            icon={createLocationBadge(location.type, location.name)}
+            eventHandlers={{
+              click: () => onLocationSelect(location)
+            }}
+          >
+            <Popup>
+              <div className="text-center">
+                <div className="font-semibold text-sm">{location.name}</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {location.type === "aeroklub" ? "Aeroklub" : location.type.toUpperCase()}
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MarkerClusterGroup>
+    </MapContainer>
+  );
+}

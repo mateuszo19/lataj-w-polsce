@@ -1,5 +1,7 @@
+import 'dotenv/config';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import { airportRoutes } from './routes/airports';
 
 const fastify = Fastify({
   logger: true
@@ -17,6 +19,8 @@ fastify.get('/', async (request, reply) => {
 fastify.get('/api/health', async (request, reply) => {
   return { status: 'ok', timestamp: new Date().toISOString() };
 });
+
+fastify.register(airportRoutes);
 
 const start = async () => {
   try {
