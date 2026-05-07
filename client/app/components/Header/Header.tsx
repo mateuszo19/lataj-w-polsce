@@ -1,3 +1,8 @@
+"use client";
+
+import { UserButton, SignInButton, useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+
 /**
  * User location coordinates
  */
@@ -16,9 +21,17 @@ interface HeaderProps {
 }
 
 /**
- * Header component displaying branding and statistics
+ * Header component displaying branding, statistics and authentication
  */
 export default function Header({ locationCount, onGetCurrentLocation, userLocation }: HeaderProps) {
+  const { user, isSignedIn } = useUser();
+  const router = useRouter();
+
+  const handleDashboardClick = () => {
+    const role = user?.publicMetadata?.role as string || 'uczen';
+    router.push(`/dashboard/${role}`);
+  };
+
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
       <div className="flex flex-col">
@@ -50,12 +63,29 @@ export default function Header({ locationCount, onGetCurrentLocation, userLocati
           </div>
         </div>
 
-        <button className="bg-gray-900 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-gray-800 transition-colors flex items-center gap-2">
-          <span>O platformie</span>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+        {isSignedIn ? (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleDashboardClick}
+              className="bg-gray-900 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-gray-800 transition-colors flex items-center gap-2"
+            >
+              <span>Dashboard</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <UserButton />
+          </div>
+        ) : (
+          <SignInButton mode="modal">
+            <button className="bg-gray-900 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-gray-800 transition-colors flex items-center gap-2">
+              <span>Zaloguj</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </SignInButton>
+        )}
       </div>
     </header>
   );

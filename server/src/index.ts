@@ -2,6 +2,7 @@ import 'dotenv/config';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { airportRoutes } from './routes/airports';
+import { authRoutes } from './routes/auth';
 
 const fastify = Fastify({
   logger: true
@@ -21,6 +22,7 @@ fastify.get('/api/health', async (request, reply) => {
 });
 
 fastify.register(airportRoutes);
+fastify.register(authRoutes, { prefix: '/api/auth' });
 
 const start = async () => {
   try {
