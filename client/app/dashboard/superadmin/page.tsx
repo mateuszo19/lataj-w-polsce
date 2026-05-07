@@ -4,6 +4,16 @@ import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import PageTemplate from "@/app/components/PageTemplate/PageTemplate";
+import {Backpack, GraduationCap, Inbox, LayoutDashboard, Plane, School} from "lucide-react";
+import {ButtonInterface} from "@/app/interface/button.interface";
+
+const navButtons: ButtonInterface[] = [
+    {text: "Dashboard", icon: <LayoutDashboard size={20}/>},
+    {text: "Ośrodki", icon: <School size={20}/>},
+    {text: "Kursy", icon: <GraduationCap size={20}/>},
+    {text: "Samoloty", icon: <Plane size={20}/>},
+    {text: "Skrzynka", icon: <Inbox size={20}/>},
+]
 
 /**
  * Superadmin dashboard page
@@ -27,8 +37,8 @@ export default function SuperadminDashboard() {
   }
 
   return (
-      <PageTemplate buttons={[{text: "12", icon: "home"}]}>
-          <p>123</p>
+      <PageTemplate buttons={navButtons}>
+          <p>DTO</p>
       </PageTemplate>
   );
 }

@@ -1,4 +1,5 @@
 export interface ButtonInterface {
     text: string;
-    icon: string;
+    icon: React.ReactNode;
+    onClick?: () => void;
 }
