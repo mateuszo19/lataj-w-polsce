@@ -1,9 +1,9 @@
 import Navigation from "@/app/components/Navigation/Navigation";
-import {ButtonInterface} from "@/app/interface/button.interface";
+import {NavButtonInterface} from "@/app/interface/navButton.interface";
 import {ReactNode} from "react";
 
 interface PageTemplateProps {
-    buttons: ButtonInterface[];
+    buttons: NavButtonInterface[];
     children: ReactNode;
 }
 
