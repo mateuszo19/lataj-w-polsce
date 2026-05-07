@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
+import { AuthProvider } from './components/Auth/AuthContext';
 
 export const metadata: Metadata = {
   title: "Lataj w Polsce",
@@ -15,9 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="pl">
-        <body className="h-screen">{children}</body>
-      </html>
+      <AuthProvider>
+        <html lang="pl">
+          <body className="h-screen">{children}</body>
+        </html>
+      </AuthProvider>
     </ClerkProvider>
   );
 }

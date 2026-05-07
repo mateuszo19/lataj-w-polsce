@@ -4,7 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start-server-dev": "",
+    "start-client-dev": "cd client && next dev"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.21",
