@@ -47,6 +47,10 @@ export default function Home() {
     setMaxDistance(distance);
   }, []);
 
+  const clearUserLocation = () => {
+      setUserLocation(null);
+  }
+
   const handleGetCurrentLocation = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -91,6 +95,7 @@ export default function Home() {
             maxDistance={maxDistance}
             onSetUserLocation={handleSetUserLocation}
             onSetMaxDistance={handleSetMaxDistance}
+            clearUserLocation={clearUserLocation}
           />
         </div>
       </div>
