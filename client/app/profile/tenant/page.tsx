@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 /**
- * Tenant dashboard page
+ * Tenant profile page
  */
 export default function TenantDashboard() {
   const { user, isLoaded } = useUser();

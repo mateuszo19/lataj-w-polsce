@@ -29,7 +29,7 @@ export default function Header({ locationCount, onGetCurrentLocation, userLocati
 
   const handleDashboardClick = () => {
     const role = user?.publicMetadata?.role as string || 'uczen';
-    router.push(`/dashboard/${role}`);
+    router.push(`/profile/${role}/dashboard`);
   };
 
   return (

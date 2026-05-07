@@ -10,35 +10,18 @@ interface NavigationProps {
 }
 
 const NavigationButton = (props: NavButtonInterface) => {
-    if (props.link) {
-        return (
-            <Link
-                href={`/${props.link}`}
-                className="flex items-center py-1 px-2 gap-2 hover:bg-[#facc1599] rounded-xl"
-            >
-                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-50">
-                    {props.icon}
-                </div>
-                <span>{props.text}</span>
-            </Link>
-        );
-    }
 
-    if (props.onClick) {
-        return (
-            <button
-                onClick={props.onClick}
-                className="flex items-center py-1 px-2 gap-2 hover:bg-[#facc1599] rounded-xl"
-            >
-                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-50">
-                    {props.icon}
-                </div>
-                <span>{props.text}</span>
-            </button>
-        );
-    }
-
-    return null;
+    return(
+        <Link
+            href={`/${props.link}`}
+            className="flex items-center py-1 px-2 gap-2 hover:bg-[#facc1599] rounded-xl"
+        >
+            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-50">
+                {props.icon}
+            </div>
+            <span>{props.text}</span>
+        </Link>
+    )
 };
 
 const Navigation = ({ buttons, contacts }: NavigationProps) => {
@@ -52,7 +35,7 @@ const Navigation = ({ buttons, contacts }: NavigationProps) => {
                     <span className="text-sm font-normal">Sekcje</span>
                     <div className="flex flex-col gap-2">
                         {buttons.map((button: NavButtonInterface) => (
-                            <NavigationButton key={button.text} icon={button.icon} text={button.text} onClick={button.onClick} />
+                            <NavigationButton link={button.link} key={button.text} icon={button.icon} text={button.text}/>
                         ))}
                     </div>
                 </div>
@@ -60,7 +43,7 @@ const Navigation = ({ buttons, contacts }: NavigationProps) => {
                     <span className="text-sm font-normal">Kontakty</span>
                     <div className="flex flex-col gap-2">
                         {contacts ? contacts.map((button: NavButtonInterface) => (
-                            <NavigationButton key={button.text} icon={button.icon} text={button.text} onClick={button.onClick} />
+                            <NavigationButton link="" key={button.text} icon={button.icon} text={button.text}/>
                         )) : <div className="p-3">
                             <p className="text-xs font-semibold">brak kontaktów</p>
                         </div>}
@@ -70,7 +53,7 @@ const Navigation = ({ buttons, contacts }: NavigationProps) => {
             <div className="flex flex-col justify-end grow gap-2 p-4">
                 <span className="text-sm font-normal">Ustawienia</span>
                 <div className="flex flex-col gap-2">
-                    <NavigationButton icon={<Settings size={20}/>} text="Ustawienia" />
+                    <NavigationButton link="" icon={<Settings size={20}/>} text="Ustawienia" />
                     <div className="flex flex-col gap-2">
                         <SignOutButton>
                             <button

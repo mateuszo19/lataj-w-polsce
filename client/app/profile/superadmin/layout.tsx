@@ -9,9 +9,13 @@ import {NavButtonInterface} from "@/app/interface/navButton.interface";
 import createLink from "@/util/createLink";
 
 /**
- * Superadmin dashboard page
+ * Superadmin profile page
  */
-export default function SuperadminDashboard() {
+export default function SuperadminDashboard({
+                                                children,
+                                            }: Readonly<{
+    children: React.ReactNode;
+}>) {
   const { user, isLoaded } = useUser();
   const router = useRouter();
 
@@ -36,7 +40,7 @@ export default function SuperadminDashboard() {
 
   return (
       <PageTemplate buttons={navButtons}>
-          <p>DTO</p>
+          {children}
       </PageTemplate>
   );
 }

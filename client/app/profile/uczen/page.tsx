@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 /**
- * Admin dashboard page
+ * Uczen (student) profile page
  */
-export default function AdminDashboard() {
+export default function UczenDashboard() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoaded && user?.publicMetadata?.role !== 'admin') {
+    if (isLoaded && user?.publicMetadata?.role !== 'uczen') {
       router.push('/');
     }
   }, [isLoaded, user, router]);
@@ -29,16 +29,16 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">ADMIN</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">UCZEŃ</h1>
           <p className="text-lg text-gray-600 mb-6">
-            Witaj w panelu administratora
+            Witaj w panelu ucznia
           </p>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-sm text-green-800">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-sm text-yellow-800">
               Email: {user?.primaryEmailAddress?.emailAddress}
             </p>
-            <p className="text-sm text-green-800 mt-2">
-              Rola: {(user?.publicMetadata?.role as string) || 'admin'}
+            <p className="text-sm text-yellow-800 mt-2">
+              Rola: {(user?.publicMetadata?.role as string) || 'uczen'}
             </p>
           </div>
         </div>

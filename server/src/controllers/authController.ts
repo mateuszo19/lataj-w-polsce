@@ -28,7 +28,7 @@ export async function getCurrentUser(request: FastifyRequest, reply: FastifyRepl
 }
 
 /**
- * Get user dashboard based on role
+ * Get user profile based on role
  */
 export async function getDashboard(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -45,7 +45,7 @@ export async function getDashboard(request: FastifyRequest, reply: FastifyReply)
       userId: request.user.id
     });
   } catch (error) {
-    reply.code(500).send({ error: 'Failed to fetch dashboard' });
+    reply.code(500).send({ error: 'Failed to fetch profile' });
   }
 }
 
